@@ -1,4 +1,4 @@
-package pro.netech.testmanagement.controller;
+package pro.netech.testmanagement.testcase.controller;
 
 import java.util.List;
 
@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
-import pro.netech.testmanagement.entity.TestCase;
-import pro.netech.testmanagement.service.TestCaseService;
+import pro.netech.testmanagement.testcase.entity.TestCase;
+import pro.netech.testmanagement.testcase.service.TestCaseService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import io.swagger.v3.oas.annotations.Operation;

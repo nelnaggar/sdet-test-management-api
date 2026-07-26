@@ -1,4 +1,4 @@
-package pro.netech.testmanagement.exception;
+package pro.netech.testmanagement.testcase.exception;
 
 public class TestCaseNotFoundException extends RuntimeException {
 	

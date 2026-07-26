@@ -1,4 +1,4 @@
-package pro.netech.testmanagement.entity;
+package pro.netech.testmanagement.testcase.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -13,8 +13,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pro.netech.testmanagement.enums.Priority;
-import pro.netech.testmanagement.enums.TestStatus;
+import pro.netech.testmanagement.testcase.enums.Priority;
+import pro.netech.testmanagement.testcase.enums.TestStatus;
 
 @Entity
 @Table(name = "test_cases")

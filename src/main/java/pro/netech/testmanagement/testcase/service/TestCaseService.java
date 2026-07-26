@@ -1,12 +1,12 @@
-package pro.netech.testmanagement.service;
+package pro.netech.testmanagement.testcase.service;
 
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import pro.netech.testmanagement.entity.TestCase;
-import pro.netech.testmanagement.exception.TestCaseNotFoundException;
-import pro.netech.testmanagement.repository.TestCaseRepository;
+import pro.netech.testmanagement.testcase.entity.TestCase;
+import pro.netech.testmanagement.testcase.exception.TestCaseNotFoundException;
+import pro.netech.testmanagement.testcase.repository.TestCaseRepository;
 
 @Service
 public class TestCaseService {

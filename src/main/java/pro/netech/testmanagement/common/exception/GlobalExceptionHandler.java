@@ -1,4 +1,4 @@
-package pro.netech.testmanagement.exception;
+package pro.netech.testmanagement.common.exception;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,6 +8,9 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import pro.netech.testmanagement.testcase.exception.TestCaseNotFoundException;
+
 import org.springframework.http.ResponseEntity;
 
 
