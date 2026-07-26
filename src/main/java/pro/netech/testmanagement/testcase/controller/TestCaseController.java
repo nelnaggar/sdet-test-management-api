@@ -10,56 +10,81 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import pro.netech.testmanagement.testcase.dto.TestCaseRequest;
 import pro.netech.testmanagement.testcase.dto.TestCaseResponse;
 import pro.netech.testmanagement.testcase.service.TestCaseService;
 
-
-
-
 @RestController
+@RequestMapping("/testcases")
+@RequiredArgsConstructor
 @Tag(
-        name = "Test Case Management",
-        description = "Operations for creating, retrieving, updating and deleting software test cases."
+        name = "Test Cases",
+        description = "Operations for managing software test cases"
 )
 public class TestCaseController {
 
     private final TestCaseService testCaseService;
 
-    public TestCaseController(TestCaseService testCaseService) {
-        this.testCaseService = testCaseService;
+    @Operation(
+            summary = "Get all test cases",
+            description = "Returns all software test cases."
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Test cases retrieved successfully"
+    )
+    @GetMapping
+    public ResponseEntity<List<TestCaseResponse>> getAllTestCases() {
+
+        List<TestCaseResponse> responses =
+                testCaseService.getAllTestCases();
+
+        return ResponseEntity.ok(responses);
     }
 
     @Operation(
-            summary = "Retrieve all test cases",
-            description = "Returns all available test cases stored in the database."
+            summary = "Get a test case by ID",
+            description = "Returns a software test case using its unique identifier."
     )
-    @GetMapping("/testcases")
-    public List<TestCaseResponse> getAllTestCases() {
-        return testCaseService.getAllTestCases();
-    }
+    @ApiResponse(
+            responseCode = "200",
+            description = "Test case retrieved successfully"
+    )
+    @ApiResponse(
+            responseCode = "404",
+            description = "Test case not found"
+    )
+    @GetMapping("/{id}")
+    public ResponseEntity<TestCaseResponse> getTestCaseById(
+            @PathVariable Long id) {
 
-    @Operation(
-            summary = "Retrieve a test case by ID",
-            description = "Returns a single test case using its unique identifier."
-    )
-    @GetMapping("/testcases/{id}")
-    public TestCaseResponse getTestCaseById(@PathVariable Long id) {
-        return testCaseService.getTestCaseById(id);
+        TestCaseResponse response =
+                testCaseService.getTestCaseById(id);
+
+        return ResponseEntity.ok(response);
     }
 
     @Operation(
             summary = "Create a new test case",
             description = "Creates a new software test case."
     )
-    @ApiResponse(responseCode = "201", description = "Test case created successfully")
-    @PostMapping("/testcases")
+    @ApiResponse(
+            responseCode = "201",
+            description = "Test case created successfully"
+    )
+    @ApiResponse(
+            responseCode = "400",
+            description = "Invalid test case data"
+    )
+    @PostMapping
     public ResponseEntity<TestCaseResponse> createTestCase(
             @Valid @RequestBody TestCaseRequest request) {
 
@@ -70,25 +95,47 @@ public class TestCaseController {
                 .status(HttpStatus.CREATED)
                 .body(response);
     }
-    
+
     @Operation(
-            summary = "Update an existing test case",
-            description = "Updates an existing software test case."
+            summary = "Update a test case",
+            description = "Updates an existing software test case using its unique identifier."
     )
-    @PutMapping("/testcases/{id}")
-    public TestCaseResponse updateTestCase(
+    @ApiResponse(
+            responseCode = "200",
+            description = "Test case updated successfully"
+    )
+    @ApiResponse(
+            responseCode = "400",
+            description = "Invalid test case data"
+    )
+    @ApiResponse(
+            responseCode = "404",
+            description = "Test case not found"
+    )
+    @PutMapping("/{id}")
+    public ResponseEntity<TestCaseResponse> updateTestCase(
             @PathVariable Long id,
             @Valid @RequestBody TestCaseRequest request) {
 
-        return testCaseService.updateTestCase(id, request);
+        TestCaseResponse response =
+                testCaseService.updateTestCase(id, request);
+
+        return ResponseEntity.ok(response);
     }
 
     @Operation(
             summary = "Delete a test case",
             description = "Deletes a software test case using its unique identifier."
     )
-    @ApiResponse(responseCode = "204", description = "Test case deleted successfully")
-    @DeleteMapping("/testcases/{id}")
+    @ApiResponse(
+            responseCode = "204",
+            description = "Test case deleted successfully"
+    )
+    @ApiResponse(
+            responseCode = "404",
+            description = "Test case not found"
+    )
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTestCase(
             @PathVariable Long id) {
 
