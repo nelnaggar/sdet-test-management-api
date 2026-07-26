@@ -30,22 +30,22 @@ public class TestCaseService {
 	public TestCase getTestCaseById(Long id) {
 		return repository.findById(id).orElseThrow(() -> new TestCaseNotFoundException(id));
 	}
-	
+
 	public TestCase updateTestCase(Long id, TestCase updatedTestCase) {
-	    TestCase existingTestCase = getTestCaseById(id);
+		TestCase existingTestCase = getTestCaseById(id);
 
-	    existingTestCase.setTitle(updatedTestCase.getTitle());
-	    existingTestCase.setDescription(updatedTestCase.getDescription());
-	    existingTestCase.setPriority(updatedTestCase.getPriority());
-	    existingTestCase.setStatus(updatedTestCase.getStatus());
-	    existingTestCase.setAutomated(updatedTestCase.getAutomated());
+		existingTestCase.setTitle(updatedTestCase.getTitle());
+		existingTestCase.setDescription(updatedTestCase.getDescription());
+		existingTestCase.setPriority(updatedTestCase.getPriority());
+		existingTestCase.setStatus(updatedTestCase.getStatus());
+		existingTestCase.setAutomated(updatedTestCase.getAutomated());
 
-	    return repository.save(existingTestCase);
+		return repository.save(existingTestCase);
 	}
 
 	public void deleteTestCase(Long id) {
-	    TestCase existingTestCase = getTestCaseById(id);
-	    repository.delete(existingTestCase);
+		TestCase existingTestCase = getTestCaseById(id);
+		repository.delete(existingTestCase);
 	}
 
 }
