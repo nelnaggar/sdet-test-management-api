@@ -19,7 +19,7 @@ public class TestCaseMapper {
 				entity.getStatus(), entity.getAutomated(), entity.getCreatedAt(), entity.getUpdatedAt());
 	}
 
-	public void updateEntity(TestCaseRequest request, TestCase entity) {
+	public void updateEntity(TestCase entity, TestCaseRequest request) {
 		entity.setTitle(request.getTitle());
 		entity.setDescription(request.getDescription());
 		entity.setPriority(request.getPriority());

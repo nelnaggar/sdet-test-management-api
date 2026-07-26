@@ -1,3 +1,4 @@
+
 package pro.netech.testmanagement.testcase.service;
 
 import java.util.List;
@@ -11,59 +12,89 @@ import pro.netech.testmanagement.testcase.exception.TestCaseNotFoundException;
 import pro.netech.testmanagement.testcase.mapper.TestCaseMapper;
 import pro.netech.testmanagement.testcase.repository.TestCaseRepository;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Service
 public class TestCaseService {
 
-    private final TestCaseRepository repository;
-    private final TestCaseMapper mapper;
+	private static final Logger logger = LoggerFactory.getLogger(TestCaseService.class);
 
-    public TestCaseService(
-            TestCaseRepository repository,
-            TestCaseMapper mapper) {
+	private final TestCaseRepository repository;
+	private final TestCaseMapper mapper;
 
-        this.repository = repository;
-        this.mapper = mapper;
-    }
+	public TestCaseService(TestCaseRepository repository, TestCaseMapper mapper) {
 
-    public List<TestCaseResponse> getAllTestCases() {
-        return repository.findAll()
-                .stream()
-                .map(mapper::toResponse)
-                .toList();
-    }
+		this.repository = repository;
+		this.mapper = mapper;
+	}
 
-    public TestCaseResponse getTestCaseById(Long id) {
-        TestCase testCase = findEntityById(id);
-        return mapper.toResponse(testCase);
-    }
+	public List<TestCaseResponse> getAllTestCases() {
 
-    public TestCaseResponse createTestCase(TestCaseRequest request) {
-        TestCase testCase = mapper.toEntity(request);
-        TestCase savedTestCase = repository.save(testCase);
+		logger.info("Retrieving all test cases");
 
-        return mapper.toResponse(savedTestCase);
-    }
+		List<TestCaseResponse> responses = repository.findAll().stream().map(mapper::toResponse).toList();
 
-    public TestCaseResponse updateTestCase(
-            Long id,
-            TestCaseRequest request) {
+		logger.info("Retrieved {} test cases", responses.size());
 
-        TestCase existingTestCase = findEntityById(id);
+		return responses;
+	}
 
-        mapper.updateEntity(request, existingTestCase);
+	public TestCaseResponse getTestCaseById(Long id) {
 
-        TestCase updatedTestCase = repository.save(existingTestCase);
+		logger.info("Retrieving test case with id {}", id);
 
-        return mapper.toResponse(updatedTestCase);
-    }
+		TestCase testCase = findEntityById(id);
 
-    public void deleteTestCase(Long id) {
-        TestCase existingTestCase = findEntityById(id);
-        repository.delete(existingTestCase);
-    }
+		logger.info("Test case with id {} retrieved successfully", id);
 
-    private TestCase findEntityById(Long id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new TestCaseNotFoundException(id));
-    }
+		return mapper.toResponse(testCase);
+	}
+
+	public TestCaseResponse createTestCase(TestCaseRequest request) {
+
+		logger.info("Creating test case with title '{}'", request.getTitle());
+
+		TestCase testCase = mapper.toEntity(request);
+		TestCase savedTestCase = repository.save(testCase);
+
+		logger.info("Test case created successfully with id {} and title '{}'", savedTestCase.getId(),
+				savedTestCase.getTitle());
+
+		return mapper.toResponse(savedTestCase);
+	}
+
+	public TestCaseResponse updateTestCase(Long id, TestCaseRequest request) {
+
+		logger.info("Updating test case with id {}", id);
+
+		TestCase existingTestCase = findEntityById(id);
+
+		mapper.updateEntity(existingTestCase, request);
+
+		TestCase updatedTestCase = repository.save(existingTestCase);
+
+		logger.info("Test case with id {} updated successfully", id);
+
+		return mapper.toResponse(updatedTestCase);
+	}
+
+	public void deleteTestCase(Long id) {
+
+		logger.info("Deleting test case with id {}", id);
+
+		TestCase testCase = findEntityById(id);
+
+		repository.delete(testCase);
+
+		logger.info("Test case with id {} deleted successfully", id);
+	}
+
+	private TestCase findEntityById(Long id) {
+
+		return repository.findById(id).orElseThrow(() -> {
+			logger.warn("Test case with id {} was not found", id);
+			return new TestCaseNotFoundException(id);
+		});
+	}
 }
