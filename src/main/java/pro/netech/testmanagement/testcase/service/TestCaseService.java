@@ -1,8 +1,10 @@
 
 package pro.netech.testmanagement.testcase.service;
 
-import java.util.List;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import pro.netech.testmanagement.testcase.dto.TestCaseRequest;
@@ -11,9 +13,6 @@ import pro.netech.testmanagement.testcase.entity.TestCase;
 import pro.netech.testmanagement.testcase.exception.TestCaseNotFoundException;
 import pro.netech.testmanagement.testcase.mapper.TestCaseMapper;
 import pro.netech.testmanagement.testcase.repository.TestCaseRepository;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Service
 public class TestCaseService {
@@ -29,15 +28,26 @@ public class TestCaseService {
 		this.mapper = mapper;
 	}
 
-	public List<TestCaseResponse> getAllTestCases() {
+	public Page<TestCaseResponse> getAllTestCases(Pageable pageable) {
 
-		logger.info("Retrieving all test cases");
+	    logger.info(
+	            "Retrieving test cases with page {}, size {} and sort {}",
+	            pageable.getPageNumber(),
+	            pageable.getPageSize(),
+	            pageable.getSort()
+	    );
 
-		List<TestCaseResponse> responses = repository.findAll().stream().map(mapper::toResponse).toList();
+	    Page<TestCaseResponse> responses = repository.findAll(pageable)
+	            .map(mapper::toResponse);
 
-		logger.info("Retrieved {} test cases", responses.size());
+	    logger.info(
+	            "Retrieved {} test cases on page {} of {}",
+	            responses.getNumberOfElements(),
+	            responses.getNumber(),
+	            responses.getTotalPages()
+	    );
 
-		return responses;
+	    return responses;
 	}
 
 	public TestCaseResponse getTestCaseById(Long id) {

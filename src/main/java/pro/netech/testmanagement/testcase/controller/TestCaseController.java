@@ -1,7 +1,8 @@
 package pro.netech.testmanagement.testcase.controller;
 
-import java.util.List;
-
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -34,18 +35,19 @@ public class TestCaseController {
     private final TestCaseService testCaseService;
 
     @Operation(
-            summary = "Get all test cases",
-            description = "Returns all software test cases."
+            summary = "Get test cases",
+            description = "Returns test cases using pagination and sorting."
     )
     @ApiResponse(
             responseCode = "200",
             description = "Test cases retrieved successfully"
     )
     @GetMapping
-    public ResponseEntity<List<TestCaseResponse>> getAllTestCases() {
+    public ResponseEntity<Page<TestCaseResponse>> getAllTestCases(
+            @ParameterObject Pageable pageable) {
 
-        List<TestCaseResponse> responses =
-                testCaseService.getAllTestCases();
+        Page<TestCaseResponse> responses =
+                testCaseService.getAllTestCases(pageable);
 
         return ResponseEntity.ok(responses);
     }
