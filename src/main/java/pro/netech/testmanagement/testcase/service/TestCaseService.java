@@ -4,48 +4,66 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import pro.netech.testmanagement.testcase.dto.TestCaseRequest;
+import pro.netech.testmanagement.testcase.dto.TestCaseResponse;
 import pro.netech.testmanagement.testcase.entity.TestCase;
 import pro.netech.testmanagement.testcase.exception.TestCaseNotFoundException;
+import pro.netech.testmanagement.testcase.mapper.TestCaseMapper;
 import pro.netech.testmanagement.testcase.repository.TestCaseRepository;
 
 @Service
 public class TestCaseService {
 
-	private final TestCaseRepository repository;
+    private final TestCaseRepository repository;
+    private final TestCaseMapper mapper;
 
-	public TestCaseService(TestCaseRepository repository) {
-		this.repository = repository;
-	}
+    public TestCaseService(
+            TestCaseRepository repository,
+            TestCaseMapper mapper) {
 
-	public List<TestCase> getAllTestCases() {
-		return repository.findAll();
-	}
+        this.repository = repository;
+        this.mapper = mapper;
+    }
 
-	public TestCase save(TestCase testCase) {
+    public List<TestCaseResponse> getAllTestCases() {
+        return repository.findAll()
+                .stream()
+                .map(mapper::toResponse)
+                .toList();
+    }
 
-		return repository.save(testCase);
+    public TestCaseResponse getTestCaseById(Long id) {
+        TestCase testCase = findEntityById(id);
+        return mapper.toResponse(testCase);
+    }
 
-	}
+    public TestCaseResponse createTestCase(TestCaseRequest request) {
+        TestCase testCase = mapper.toEntity(request);
+        TestCase savedTestCase = repository.save(testCase);
 
-	public TestCase getTestCaseById(Long id) {
-		return repository.findById(id).orElseThrow(() -> new TestCaseNotFoundException(id));
-	}
+        return mapper.toResponse(savedTestCase);
+    }
 
-	public TestCase updateTestCase(Long id, TestCase updatedTestCase) {
-		TestCase existingTestCase = getTestCaseById(id);
+    public TestCaseResponse updateTestCase(
+            Long id,
+            TestCaseRequest request) {
 
-		existingTestCase.setTitle(updatedTestCase.getTitle());
-		existingTestCase.setDescription(updatedTestCase.getDescription());
-		existingTestCase.setPriority(updatedTestCase.getPriority());
-		existingTestCase.setStatus(updatedTestCase.getStatus());
-		existingTestCase.setAutomated(updatedTestCase.getAutomated());
+        TestCase existingTestCase = findEntityById(id);
 
-		return repository.save(existingTestCase);
-	}
+        mapper.updateEntity(request, existingTestCase);
 
-	public void deleteTestCase(Long id) {
-		TestCase existingTestCase = getTestCaseById(id);
-		repository.delete(existingTestCase);
-	}
+        TestCase updatedTestCase = repository.save(existingTestCase);
 
+        return mapper.toResponse(updatedTestCase);
+    }
+
+    public void deleteTestCase(Long id) {
+        TestCase existingTestCase = findEntityById(id);
+        repository.delete(existingTestCase);
+    }
+
+    private TestCase findEntityById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new TestCaseNotFoundException(id));
+    }
 }
