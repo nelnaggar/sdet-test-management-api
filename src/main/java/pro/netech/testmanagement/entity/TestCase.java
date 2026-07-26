@@ -8,6 +8,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 import pro.netech.testmanagement.enums.Priority;
 import pro.netech.testmanagement.enums.TestStatus;
 
@@ -19,28 +22,32 @@ public class TestCase {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Title is mandatory")
     private String title;
 
+    @NotBlank(message = "Description is mandatory")
     private String description;
 
+    @NotNull(message = "Priority is mandatory")
     @Enumerated(EnumType.STRING)
     private Priority priority;
 
+    @NotNull(message = "Status is mandatory")
     @Enumerated(EnumType.STRING)
     private TestStatus status;
 
+    @NotNull(message = "Automation status is mandatory")
     private Boolean automated;
 
     public TestCase() {
     }
 
-    public TestCase(
-            Long id,
-            String title,
-            String description,
-            Priority priority,
-            TestStatus status,
-            Boolean automated) {
+    public TestCase(Long id,
+                    String title,
+                    String description,
+                    Priority priority,
+                    TestStatus status,
+                    Boolean automated) {
 
         this.id = id;
         this.title = title;

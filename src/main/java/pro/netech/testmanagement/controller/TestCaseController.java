@@ -2,13 +2,16 @@ package pro.netech.testmanagement.controller;
 
 import java.util.List;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.validation.Valid;
 import pro.netech.testmanagement.entity.TestCase;
-import pro.netech.testmanagement.enums.Priority;
-import pro.netech.testmanagement.enums.TestStatus;
 import pro.netech.testmanagement.service.TestCaseService;
 
 @RestController
@@ -26,13 +29,26 @@ public class TestCaseController {
 	}
 
 	@PostMapping("/testcases")
-	public TestCase createTestCase() {
-
-		TestCase testCase = new TestCase(null, "Verify successful login", "Verify that a valid user can log in",
-				Priority.HIGH, TestStatus.READY, true);
-
+	public TestCase createTestCase(@Valid @RequestBody TestCase testCase) {
 		return testCaseService.save(testCase);
+	}
 
+	@GetMapping("/testcases/{id}")
+	public TestCase getTestCaseById(@PathVariable Long id) {
+
+		return testCaseService.getTestCaseById(id);
+
+	}
+
+	@PutMapping("/testcases/{id}")
+	public TestCase updateTestCase(@PathVariable Long id, @Valid @RequestBody TestCase testCase) {
+
+		return testCaseService.updateTestCase(id, testCase);
+	}
+
+	@DeleteMapping("/testcases/{id}")
+	public void deleteTestCase(@PathVariable Long id) {
+		testCaseService.deleteTestCase(id);
 	}
 
 }
