@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,6 +22,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import pro.netech.testmanagement.testcase.dto.TestCaseRequest;
 import pro.netech.testmanagement.testcase.dto.TestCaseResponse;
+import pro.netech.testmanagement.testcase.enums.Priority;
+import pro.netech.testmanagement.testcase.enums.TestStatus;
 import pro.netech.testmanagement.testcase.service.TestCaseService;
 
 @RestController
@@ -44,10 +47,18 @@ public class TestCaseController {
     )
     @GetMapping
     public ResponseEntity<Page<TestCaseResponse>> getAllTestCases(
+            @RequestParam(required = false) Priority priority,
+            @RequestParam(required = false) TestStatus status,
+            @RequestParam(required = false) Boolean automated,
             @ParameterObject Pageable pageable) {
 
         Page<TestCaseResponse> responses =
-                testCaseService.getAllTestCases(pageable);
+                testCaseService.getAllTestCases(
+                        priority,
+                        status,
+                        automated,
+                        pageable
+                );
 
         return ResponseEntity.ok(responses);
     }
