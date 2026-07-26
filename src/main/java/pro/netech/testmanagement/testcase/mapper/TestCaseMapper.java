@@ -9,31 +9,21 @@ import pro.netech.testmanagement.testcase.entity.TestCase;
 @Component
 public class TestCaseMapper {
 
-    public TestCase toEntity(TestCaseRequest request) {
-        return new TestCase(
-                null,
-                request.getTitle(),
-                request.getDescription(),
-                request.getPriority(),
-                request.getStatus(),
-                request.getAutomated());
-    }
+	public TestCase toEntity(TestCaseRequest request) {
+		return new TestCase(null, request.getTitle(), request.getDescription(), request.getPriority(),
+				request.getStatus(), request.getAutomated(), null, null);
+	}
 
-    public TestCaseResponse toResponse(TestCase entity) {
-        return new TestCaseResponse(
-                entity.getId(),
-                entity.getTitle(),
-                entity.getDescription(),
-                entity.getPriority(),
-                entity.getStatus(),
-                entity.getAutomated());
-    }
+	public TestCaseResponse toResponse(TestCase entity) {
+		return new TestCaseResponse(entity.getId(), entity.getTitle(), entity.getDescription(), entity.getPriority(),
+				entity.getStatus(), entity.getAutomated(), entity.getCreatedAt(), entity.getUpdatedAt());
+	}
 
-    public void updateEntity(TestCaseRequest request, TestCase entity) {
-        entity.setTitle(request.getTitle());
-        entity.setDescription(request.getDescription());
-        entity.setPriority(request.getPriority());
-        entity.setStatus(request.getStatus());
-        entity.setAutomated(request.getAutomated());
-    }
+	public void updateEntity(TestCaseRequest request, TestCase entity) {
+		entity.setTitle(request.getTitle());
+		entity.setDescription(request.getDescription());
+		entity.setPriority(request.getPriority());
+		entity.setStatus(request.getStatus());
+		entity.setAutomated(request.getAutomated());
+	}
 }

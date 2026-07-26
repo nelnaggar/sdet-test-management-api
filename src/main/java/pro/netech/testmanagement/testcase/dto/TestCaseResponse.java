@@ -1,5 +1,7 @@
 package pro.netech.testmanagement.testcase.dto;
 
+import java.time.LocalDateTime;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,4 +21,6 @@ public class TestCaseResponse {
     private Priority priority;
     private TestStatus status;
     private Boolean automated;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }
