@@ -1,0 +1,143 @@
+@startuml
+
+title SDET Test Management System — Domain Model
+
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+
+' =========================================================
+' PROJECT
+' =========================================================
+
+class Project {
+    Long id
+    String name
+    String description
+    LocalDateTime createdAt
+    LocalDateTime updatedAt
+}
+
+' =========================================================
+' TEST DESIGN
+' =========================================================
+
+class TestSuite {
+    Long id
+    String name
+    String description
+    LocalDateTime createdAt
+    LocalDateTime updatedAt
+}
+
+class TestSuiteItem {
+    Long id
+    Integer position
+}
+
+class TestCase {
+    Long id
+    String title
+    String objective
+    String preconditions
+    Priority priority
+    TestCaseStatus status
+    Boolean automated
+    Integer estimatedDurationMinutes
+    LocalDateTime createdAt
+    LocalDateTime updatedAt
+}
+
+class TestStep {
+    Long id
+    Integer stepNumber
+    String action
+    String expectedResult
+}
+
+class TestData {
+    Long id
+    String name
+    String value
+}
+
+' =========================================================
+' TEST EXECUTION
+' =========================================================
+
+class TestExecution {
+    Long id
+    ExecutionResult result
+    String actualResult
+    String environment
+    String buildVersion
+    String executionNotes
+    Integer durationMinutes
+    LocalDateTime executedAt
+}
+
+class Tester {
+    Long id
+    String firstName
+    String lastName
+    String email
+}
+
+class Defect {
+    Long id
+    String title
+    String description
+    DefectStatus status
+    String externalReference
+    LocalDateTime createdAt
+    LocalDateTime updatedAt
+}
+
+' =========================================================
+' ENUMERATIONS
+' =========================================================
+
+enum Priority {
+    LOW
+    MEDIUM
+    HIGH
+    CRITICAL
+}
+
+enum TestCaseStatus {
+    DRAFT
+    READY
+    RETIRED
+}
+
+enum ExecutionResult {
+    NOT_RUN
+    PASSED
+    FAILED
+    BLOCKED
+    SKIPPED
+}
+
+enum DefectStatus {
+    OPEN
+    IN_PROGRESS
+    RESOLVED
+    CLOSED
+}
+
+' =========================================================
+' RELATIONSHIPS
+' =========================================================
+
+Project "1" *-- "0..*" TestSuite
+
+TestSuite "1" *-- "0..*" TestSuiteItem
+TestSuiteItem "0..*" --> "1" TestCase
+
+TestCase "1" *-- "0..*" TestStep
+TestCase "1" *-- "0..*" TestData
+TestCase "1" *-- "0..*" TestExecution
+
+TestExecution "0..*" --> "1" Tester : executed by
+TestExecution "0..*" -- "0..*" Defect : identifies
+
+@enduml
