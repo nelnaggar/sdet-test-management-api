@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import pro.netech.testmanagement.testcase.enums.TestStatus;
 import pro.netech.testmanagement.testcase.exception.TestCaseNotFoundException;
 import pro.netech.testmanagement.testcase.mapper.TestCaseMapper;
 import pro.netech.testmanagement.testcase.repository.TestCaseRepository;
+import pro.netech.testmanagement.testcase.specification.TestCaseSpecification;
 
 @Service
 @RequiredArgsConstructor
@@ -25,25 +27,31 @@ public class TestCaseService {
 	private final TestCaseRepository repository;
 	private final TestCaseMapper mapper;
 
-	public Page<TestCaseResponse> getAllTestCases(Priority priority, TestStatus status, Boolean automated,
-			Pageable pageable) {
+	public Page<TestCaseResponse> getAllTestCases(
+	        Priority priority,
+	        TestStatus status,
+	        Boolean automated,
+	        String title,
+	        Pageable pageable) {
 
-		logger.info("Retrieving test cases with priority {}, status {}, automated {}, page {}, size {} and sort {}",
-				priority, status, automated, pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort());
+		logger.info(
+		        "Retrieving test cases with priority {}, status {}, automated {}, title '{}', page {}, size {} and sort {}",
+		        priority,
+		        status,
+		        automated,
+		        title,
+		        pageable.getPageNumber(),
+		        pageable.getPageSize(),
+		        pageable.getSort()
+		);
 
-		Page<TestCase> testCases;
+		Specification<TestCase> specification =
+		        TestCaseSpecification.hasPriority(priority)
+		                .and(TestCaseSpecification.hasStatus(status))
+		                .and(TestCaseSpecification.isAutomated(automated))
+		                .and(TestCaseSpecification.titleContains(title));
 
-		if (priority != null) {
-			testCases = repository.findByPriority(priority, pageable);
-		} else if (status != null) {
-			testCases = repository.findByStatus(status, pageable);
-		} else if (automated != null) {
-			testCases = repository.findByAutomated(automated, pageable);
-		} else {
-			testCases = repository.findAll(pageable);
-		}
-
-		Page<TestCaseResponse> responses = testCases.map(mapper::toResponse);
+		Page<TestCaseResponse> responses = repository.findAll(specification, pageable).map(mapper::toResponse);
 
 		logger.info("Retrieved {} test cases on page {} of {}", responses.getNumberOfElements(), responses.getNumber(),
 				responses.getTotalPages());

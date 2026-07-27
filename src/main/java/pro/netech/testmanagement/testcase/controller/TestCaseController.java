@@ -50,6 +50,7 @@ public class TestCaseController {
             @RequestParam(required = false) Priority priority,
             @RequestParam(required = false) TestStatus status,
             @RequestParam(required = false) Boolean automated,
+            @RequestParam(required = false) String title,
             @ParameterObject Pageable pageable) {
 
         Page<TestCaseResponse> responses =
@@ -57,6 +58,7 @@ public class TestCaseController {
                         priority,
                         status,
                         automated,
+                        title,
                         pageable
                 );
 
